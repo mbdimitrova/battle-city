@@ -5,7 +5,7 @@ A remake of the classic video game [Battle City](https://en.wikipedia.org/wiki/B
 
 Gameplay
 --------
-The player, controlling a tank, must kill the enemy tanks and protect the base from them. A level is completed when the player destroys all 20 enemy tanks. The game ends if the player loosed all available lives or the player's base is destroyed.
+The player, controlling a tank, must kill the enemy tanks and protect the base from them. A level is completed when the player destroys all 20 enemy tanks. The game ends if the player looses all available lives or the player's base is destroyed.
 
 Obstacles
 ---------
@@ -22,13 +22,13 @@ Randomly appearing on the field for a period of time
 + __Tank__ - extra life
 + __Star__ - improves player's tank
 + __Bomb__ - destroys all visible enemy tanks
-+ __Clock__ - feeezes all enemy tanks for a period of time
++ __Clock__ - freezes all enemy tanks for a period of time
 + __Shovel__ - adds steel walls around the base for a period of time
 + __Shield__ - makes player's tank invulnerable for a period of time
 
 Controls
 --------
-The player's tank is be controlled by:
+The player's tank is controlled by:
 + __Keyboard__
     + Move - up / down / left / right arrow keys
     + Shoot - spacebar
