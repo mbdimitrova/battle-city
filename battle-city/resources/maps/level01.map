@@ -1,0 +1,32 @@
+[level]
+tileset = level01.png
+map = .............
+      .=.=.=.=.=.=.
+      .=.=.=.=.=.=.
+      .=.=.=#=.=.=.
+      .=.=.=.=.=.=.
+      .=.=.....=.=.
+      .....=.=.....
+      #.==.....==.#
+      .....=.=....
+      .=.=.===.=.=.
+      .=.=.=.=.=.=.
+      .=.=.=.=.=.=.
+      .=.=.....=.=.
+      .=.=.===.=.=.
+      .....=.=.....
+
+[.]
+name = floor
+
+[=]
+name = brick
+wall = true
+block = true
+destroyable = true
+
+[#]
+name = steel
+wall = true
+block = true
+destroyable = false
