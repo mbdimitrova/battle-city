@@ -9,7 +9,7 @@ SCREEN_WIDTH = 416
 SCREEN_HEIGHT = 480
 LEVEL01 = "level01.png"
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-MAP_CACHE = { LEVEL01: load_tile_table(LEVEL01, MAP_TILE_WIDTH, MAP_TILE_HEIGHT)}
+MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
 
 
 class Level(object):
@@ -80,7 +80,6 @@ class Level(object):
                 # if the position is blank
                 else:
                     tile = 0, 0
-                    pass # overlays...
                 tile_image = tiles[tile[0]][tile[1]]
                 image.blit(tile_image,
                         (map_x*MAP_TILE_WIDTH, map_y*MAP_TILE_HEIGHT))

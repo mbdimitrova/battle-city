@@ -1,18 +1,17 @@
 import pygame
 import pygame.locals
-from ..components.map import load_tile_table
+from ..components.map import *
 from ..components.level import *
 
 
 
 MAP_TILE_WIDTH = 32
 MAP_TILE_HEIGHT = 32
-LEVEL01 = "level01.png"
-LEVEL01_MAP= "level01.map"
+LEVEL01 = "level01"
 
 def initialize_level01():
     level = Level()
-    level.load_file(LEVEL01_MAP)
+    level.load_file("%s.map" % LEVEL01)
 
     clock = pygame.time.Clock()
 
