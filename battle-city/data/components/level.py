@@ -3,21 +3,21 @@ import pygame
 from pygame.locals import *
 from map import *
 
-
-SCREEN_WIDTH = 416
-SCREEN_HEIGHT = 480
 MAP_TILE_WIDTH = 32
 MAP_TILE_HEIGHT = 32
+SCREEN_WIDTH = 416
+SCREEN_HEIGHT = 480
 LEVEL01 = "level01.png"
-MAP = "../../resources/maps/level01.map"
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+MAP_CACHE = { LEVEL01: load_tile_table(LEVEL01, MAP_TILE_WIDTH, MAP_TILE_HEIGHT)}
 
 
 class Level(object):
-    def load_file(self, filename="level01.map"):
+    def load_file(self, filename):
         self.map = []
         self.key = {}
         parser = ConfigParser.ConfigParser()
-        parser.read(filename)
+        parser.read("resources/maps/%s" % filename) # ../../
         self.tileset = parser.get("level", "tileset")
         self.map = parser.get("level", "map").split("\n")
         for section in parser.sections():
@@ -85,30 +85,3 @@ class Level(object):
                 image.blit(tile_image,
                         (map_x*MAP_TILE_WIDTH, map_y*MAP_TILE_HEIGHT))
         return image
-
-if __name__ == "__main__":
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-    MAP_CACHE = { LEVEL01: load_tile_table(LEVEL01, MAP_TILE_WIDTH, MAP_TILE_HEIGHT)}
-
-    level = Level()
-    level.load_file(MAP)
-
-    clock = pygame.time.Clock()
-
-    # overlays...
-    screen.blit(level.render(), (0, 0))
-    #overlays...
-    pygame.display.flip()
-
-    game_over = False
-    while not game_over:
-        # draw all objects here
-        #overlays
-        pygame.display.flip()
-        clock.tick(15)
-        for event in pygame.event.get():
-            if event.type == pygame.locals.QUIT:
-                game_over = True
-            elif event.type == pygame.locals.KEYDOWN:
-                pressed_key = event.key

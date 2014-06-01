@@ -5,8 +5,6 @@ This is an attempt to recreate
 Battle City for NES
 """
 
-import sys
-import pygame as pg
 from data.main import main
 
 if __name__=='__main__':
