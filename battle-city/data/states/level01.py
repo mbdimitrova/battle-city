@@ -11,10 +11,6 @@ LEVEL01 = "level01.png"
 LEVEL01_MAP= "level01.map"
 
 def initialize_level01():
-    #screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-    #MAP_CACHE = { LEVEL01: load_tile_table(LEVEL01, MAP_TILE_WIDTH, MAP_TILE_HEIGHT)}
-
     level = Level()
     level.load_file(LEVEL01_MAP)
 
