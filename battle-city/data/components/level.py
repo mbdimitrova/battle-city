@@ -1,12 +1,12 @@
-import ConfigParser
+import configparser
 import pygame
 from pygame.locals import *
-from map import *
+from .map import *
 
 MAP_TILE_WIDTH = 32
 MAP_TILE_HEIGHT = 32
 SCREEN_WIDTH = 416
-SCREEN_HEIGHT = 480
+SCREEN_HEIGHT = 448
 LEVEL01 = "level01.png"
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
@@ -16,7 +16,7 @@ class Level(object):
     def load_file(self, filename):
         self.map = []
         self.key = {}
-        parser = ConfigParser.ConfigParser()
+        parser = configparser.ConfigParser()
         parser.read("resources/maps/%s" % filename) # ../../
         self.tileset = parser.get("level", "tileset")
         self.map = parser.get("level", "map").split("\n")
@@ -72,11 +72,13 @@ class Level(object):
         overlays = {}
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
+
                 # if the position is an obstacle
                 if self.is_tile(map_x, map_y, "brick"):
                     tile = 1, 0
                 elif self.is_tile(map_x, map_y, "steel"):
                     tile = 2, 0
+
                 # if the position is blank
                 else:
                     tile = 0, 0
