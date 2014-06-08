@@ -3,23 +3,45 @@ import pygame
 from pygame.locals import *
 from .map import *
 
-MAP_TILE_WIDTH = 32
-MAP_TILE_HEIGHT = 32
-SCREEN_WIDTH = 416
-SCREEN_HEIGHT = 448
-LEVEL01 = "level01.png"
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
+TILE_WIDTH = 32
+TILE_HEIGHT = 32
+
+def initialize_level(filename):
+    level = Level()
+    level.load_file("%s.map" % filename)
+  
+    clock = pygame.time.Clock() 
+    # overlays...   
+    screen = pygame.display.set_mode((level.width * TILE_WIDTH, level.height * TILE_HEIGHT))
+    screen.blit(level.render(), (0, 0))
+   
+    pygame.display.flip()
+    
+    game_over = False
+    while not game_over:
+            # draw all objects here
+            #overlays
+            pygame.display.flip()
+            clock.tick(15)
+            for event in pygame.event.get():
+                if event.type == pygame.locals.QUIT:
+                    game_over = True
+                elif event.type == pygame.locals.KEYDOWN:
+                    pressed_key = event.key
 
 
 class Level(object):
+    
     def load_file(self, filename):
         self.map = []
         self.key = {}
         parser = configparser.ConfigParser()
-        parser.read("resources/maps/%s" % filename) # ../../
+        parser.read("resources/maps/%s" % filename)
         self.tileset = parser.get("level", "tileset")
         self.map = parser.get("level", "map").split("\n")
+        self.width = parser.get("level", "width")
+        self.height = parser.get("level", "height")
+        self.map_cache = TileCache(TILE_WIDTH, TILE_HEIGHT)
         for section in parser.sections():
             if len(section) == 1:
                 desc = dict(parser.items(section))
@@ -51,7 +73,7 @@ class Level(object):
     def get_bool(self, x, y, flag):
         """Find out if the specified flag is set on the specified position on the map"""
         value = self.get_tile(x, y).get(flag)
-        return value in (True, 1, 'yes', 'true', 'True', 'Yes', '1', 'on', 'On')
+        return value == 'true'
 
     def is_tile(self, x, y, tile_type):
         """Is the specified position a tile of the given type?"""
@@ -67,8 +89,8 @@ class Level(object):
         """Is the specified position a tile which can be destroyed?"""
 
     def render(self):
-        tiles = MAP_CACHE[self.tileset]
-        image = pygame.Surface((self.width*MAP_TILE_WIDTH, self.height*MAP_TILE_HEIGHT))
+        tiles = self.map_cache[self.tileset]
+        image = pygame.Surface((self.width * TILE_WIDTH, self.height * TILE_HEIGHT))
         overlays = {}
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
@@ -84,5 +106,5 @@ class Level(object):
                     tile = 0, 0
                 tile_image = tiles[tile[0]][tile[1]]
                 image.blit(tile_image,
-                        (map_x*MAP_TILE_WIDTH, map_y*MAP_TILE_HEIGHT))
+                        (map_x * TILE_WIDTH, map_y * TILE_HEIGHT))
         return image

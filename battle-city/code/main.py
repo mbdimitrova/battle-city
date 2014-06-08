@@ -1,7 +1,7 @@
-from .states.level01 import initialize_level01
+from .level import initialize_level
 import pygame
 
 def main():
     """Add states to control here."""
     pygame.display.set_caption('Battle City')
-    initialize_level01()
+    initialize_level("level01")

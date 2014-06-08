@@ -2,25 +2,10 @@ import pygame
 import pygame.locals
 
 
-MAP_TILE_WIDTH = 32
-MAP_TILE_HEIGHT = 32
-
-#def load_tile_table(filename, width, height):
-#    image = pygame.image.load("resources/graphics/%s" % filename).convert() # ../../
-#    image_width, image_height = image.get_size()
-#    tile_table = []
-#    for tile_x in range(0, image_width/width):
-#        line = []
-#        tile_table.append(line)
-#        for tile_y in range(0, image_height/height):
-#            rectangle = (tile_x*width, tile_y*height, width, height)
-#            line.append(image.subsurface(rectangle))
-#    return tile_table
-
 class TileCache:
     """Load the tilesets lazily into global cache"""
 
-    def __init__(self, width = MAP_TILE_WIDTH, height = MAP_TILE_HEIGHT):
+    def __init__(self, width, height):
         self.width = width
         self.height = height
         self.cache = {}
@@ -39,13 +24,13 @@ class TileCache:
     def load_tile_table(self, filename, width, height):
         """Load an image and split it into tiles"""
 
-        image = pygame.image.load("resources/graphics/%s" % filename).convert()
+        image = pygame.image.load("resources/graphics/stage.png").convert()
         image_width, image_height = image.get_size()
         tile_table = []
-        for tile_x in range(0, image_width / width):
+        for tile_x in range(0, image_width // width):
             line = []
             tile_table.append(line)
-            for tile_y in range(0, image_height / height):
+            for tile_y in range(0, image_height // height):
                 rectangle = (tile_x * width, tile_y * height, width, height)
                 line.append(image.subsurface(rectangle))
         return tile_table
