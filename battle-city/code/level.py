@@ -9,29 +9,29 @@ TILE_HEIGHT = 32
 def initialize_level(filename):
     level = Level()
     level.load_file("%s.map" % filename)
-  
-    clock = pygame.time.Clock() 
-    # overlays...   
+
+    clock = pygame.time.Clock()
+    # overlays...
     screen = pygame.display.set_mode((level.width * TILE_WIDTH, level.height * TILE_HEIGHT))
     screen.blit(level.render(), (0, 0))
-   
+
     pygame.display.flip()
-    
+
     game_over = False
     while not game_over:
-            # draw all objects here
-            #overlays
-            pygame.display.flip()
-            clock.tick(15)
-            for event in pygame.event.get():
-                if event.type == pygame.locals.QUIT:
-                    game_over = True
-                elif event.type == pygame.locals.KEYDOWN:
-                    pressed_key = event.key
+        # draw all objects here
+        #overlays
+        pygame.display.flip()
+        clock.tick(15)
+        for event in pygame.event.get():
+            if event.type == pygame.locals.QUIT:
+               game_over = True
+            elif event.type == pygame.locals.KEYDOWN:
+                pressed_key = event.key
 
 
 class Level(object):
-    
+
     def load_file(self, filename):
         self.map = []
         self.key = {}
@@ -75,7 +75,7 @@ class Level(object):
         value = self.get_tile(x, y).get(flag)
         return value == 'true'
 
-    def is_tile(self, x, y, tile_type):
+    def tile_type(self, x, y, tile_type):
         """Is the specified position a tile of the given type?"""
         return self.get_tile(x, y).get("name") == tile_type
 
@@ -96,10 +96,14 @@ class Level(object):
             for map_x, c in enumerate(line):
 
                 # if the position is an obstacle
-                if self.is_tile(map_x, map_y, "brick"):
+                if self.tile_type(map_x, map_y, "brick"):
                     tile = 1, 0
-                elif self.is_tile(map_x, map_y, "steel"):
+                elif self.tile_type(map_x, map_y, "steel"):
                     tile = 2, 0
+
+                #if the position is the base
+                elif self.tile_type(map_x, map_y, "base"):
+                    tile = 6, 0
 
                 # if the position is blank
                 else:
