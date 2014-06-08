@@ -3,61 +3,30 @@ import pygame
 from pygame.locals import *
 from .map import *
 
-TILE_WIDTH = 32
-TILE_HEIGHT = 32
-
-def initialize_level(filename):
-    level = Level()
-    level.load_file("%s.map" % filename)
-
-    clock = pygame.time.Clock()
-    # overlays...
-    screen = pygame.display.set_mode((level.width * TILE_WIDTH, level.height * TILE_HEIGHT))
-    screen.blit(level.render(), (0, 0))
-
-    pygame.display.flip()
-
-    game_over = False
-    while not game_over:
-        # draw all objects here
-        #overlays
-        pygame.display.flip()
-        clock.tick(15)
-        for event in pygame.event.get():
-            if event.type == pygame.locals.QUIT:
-               game_over = True
-            elif event.type == pygame.locals.KEYDOWN:
-                pressed_key = event.key
-
 
 class Level(object):
-
-    def load_file(self, filename):
+    """Load and store map of the level and its items"""
+    def __init__(self, filename, tile_width, tile_height):
+        self.tile_width = tile_width
+        self.tile_height = tile_height
+        self.tileset = ''
         self.map = []
         self.key = {}
+        self.items = {}
+        self.map_width = 0
+        self.height = 0
+
+    def load_map_file(self, filename):
         parser = configparser.ConfigParser()
-        parser.read("resources/maps/%s" % filename)
+        parser.read("resources/maps/%s.map" % filename)
         self.tileset = parser.get("level", "tileset")
         self.map = parser.get("level", "map").split("\n")
-        self.width = parser.get("level", "width")
-        self.height = parser.get("level", "height")
-        self.map_cache = TileCache(TILE_WIDTH, TILE_HEIGHT)
         for section in parser.sections():
             if len(section) == 1:
-                desc = dict(parser.items(section))
-                self.key[section] = desc
-        self.width = len(self.map[0])
+                description = dict(parser.items(section))
+                self.key[section] = description
+        self.map_width = len(self.map[0])
         self.height = len(self.map)
-
-    def get_tile(self, x, y):
-        try:
-            char = self.map[y][x]
-        except IndexError:
-            return {}
-        try:
-            return self.key[char]
-        except KeyError:
-            return {}
 
     def get_tile(self, x, y):
         """Find out what's at the specified position of the map"""
@@ -70,7 +39,7 @@ class Level(object):
         except KeyError:
             return {}
 
-    def get_bool(self, x, y, flag):
+    def is_flagged(self, x, y, flag):
         """Find out if the specified flag is set on the specified position on the map"""
         value = self.get_tile(x, y).get(flag)
         return value == 'true'
@@ -81,16 +50,25 @@ class Level(object):
 
     def is_blocking(self, x, y):
         """Is the specified postion a blocking element?"""
-        if not 0 <= x < self.width or not 0 <= y < self.height:
+        if not 0 <= x < self.map_width or not 0 <= y < self.height:
             return True
-        return self.get_bool(x, y, 'block')
+        return self.is_flagged(x, y, 'block')
 
     def is_destroyable(self, x, y):
         """Is the specified position a tile which can be destroyed?"""
 
-    def render(self):
+    def render(self, map_filename):
+        """Draw the level"""
+        self.load_map_file(map_filename)
+
+        view_width = self.map_width * self.tile_width
+        view_height = self.height * self.tile_height
+        screen = pygame.display.set_mode((view_width, view_height))
+        image = pygame.Surface((view_width, view_height))
+
+        self.map_cache = TileCache("stage.png", self.tile_width, self.tile_height)
+
         tiles = self.map_cache[self.tileset]
-        image = pygame.Surface((self.width * TILE_WIDTH, self.height * TILE_HEIGHT))
         overlays = {}
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
@@ -110,5 +88,5 @@ class Level(object):
                     tile = 0, 0
                 tile_image = tiles[tile[0]][tile[1]]
                 image.blit(tile_image,
-                        (map_x * TILE_WIDTH, map_y * TILE_HEIGHT))
+                        (map_x * self.tile_width, map_y * self.tile_height))
         return image

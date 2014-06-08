@@ -1,5 +1,5 @@
 [level]
-tileset = level01.png
+tileset = stage.png
 map = .............
       .=.=.=.=.=.=.
       .=.=.=.=.=.=.
@@ -15,8 +15,6 @@ map = .............
       .=.=.....=.=.
       .=.=.===.=.=.
       .....=b=.....
-width = 13
-height = 15
 
 [.]
 name = floor
