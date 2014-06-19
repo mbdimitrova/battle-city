@@ -14,7 +14,6 @@ class Game(object):
         self.pressed_key = None
         self.game_over = False
         self.create_level(Level(current_level, TILE_WIDTH, TILE_HEIGHT))
-        #self.sprites = SortedUpdates()
         self.screen = pg.display.get_surface()
 
     def create_level(self, level):
@@ -27,13 +26,9 @@ class Game(object):
             
         for position, tile in level.items.items():
             if tile.get("player") == "true":
-                print("[game.py] player sprite is created")
                 sprite = Player(position, "up", 3)
                 self.player = sprite
-            else:
-                print("[game.py] um NO player")
             self.sprites.add(sprite)
-            print("[game.py] self.sprites", self.sprites)
 
         for (x, y), image in overlays.items():
             overlay = pygame.sprite.Sprite(self.overlays)
@@ -53,8 +48,10 @@ class Game(object):
             x, y = self.player.position
             self.player.direction = direction
             direction = DIRECTIONS.index(direction)
-            if not self.level.is_blocking(x + DX[direction], y + DY[direction]):
-                self.player.animation = self.player.move_tank()
+            next_x = x + DX[direction]
+            next_y = y + DY[direction]
+            if not self.level.is_blocking(next_x, next_y ):
+                self.player.move_tank()
 
         if is_pressed(pgl.K_UP):
             move("up")
@@ -82,7 +79,9 @@ class Game(object):
 
             self.control()
             self.player.update()
+            dirty = self.sprites.draw(self.screen)
             self.overlays.draw(self.screen)
+            pg.display.update(dirty)
             clock.tick(15)
 
             for event in pg.event.get():
