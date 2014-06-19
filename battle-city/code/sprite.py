@@ -13,39 +13,31 @@ class SortedUpdates(pygame.sprite.RenderUpdates):
 
 class Sprite(pygame.sprite.Sprite):
     """Sprite for animated items and base class for Tank"""
-    is_plyer = False
+    is_player = False
 
     def __init__(self, position = (0, 0), frames = None):
-        super(Sprite, self).__init__
+        super(Sprite, self).__init__()
         if frames:
             self.frames = frames
-            self.image = self.frames[0][0]
-            self.rect = self.image.get_rect()
-            self.animation = self.stand_animation()
-            self.pos = pos
+        self.image = self.frames[0][0]
+        self.rect = self.image.get_rect()
+        self.position = position
 
     def get_position(self):
         """Check the current position of the sprite on the map"""
-        return (self.rect.midbottom[0] - MAP_TILE_WIDTH / 2) / MAP_TILE_HEIGHT, (self.rect.midbottom[1] - MAP_TILE_HEIGHT) / MAP_TILE_HEIGHT
+        return (self.rect.midbottom[0] - MAP_TILE_WIDTH // 2) // MAP_TILE_HEIGHT, (self.rect.midbottom[1] - MAP_TILE_HEIGHT) // MAP_TILE_HEIGHT
 
     def set_position(self, position):
         """Set the position of the sprite on the map"""
-        self.rect.midbottom = pos[0] * MAP_TILE_WIDTH + MAP_TILE_WIDTH / 2, posisiton[1] * MAP_TILE_HEIGHT + MAP_TILE_HEIGHT
+        self.rect.midbottom = position[0] * MAP_TILE_WIDTH + MAP_TILE_WIDTH / 2, position[1] * MAP_TILE_HEIGHT + MAP_TILE_HEIGHT
+        self.depth = self.rect.midbottom[1]
 
-        position = property(get_position, set_position)
+    position = property(get_position, set_position)
 
     def move(self, dx, dy):
         """Change the position of the sprite"""
         self.rect.move_ip(dx, dy)
-
-    def animate(self):
-        """Default animation"""
-        while True:
-            # Change to next frame on every two ticks
-            for frame in self.frames[0]:
-                self.image = frame
-                yield None
-                yield None
+        self.depth = self.rect.midbottom[1]
 
     def update(self, *args):
         """Run the current animation"""

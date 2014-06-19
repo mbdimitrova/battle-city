@@ -1,24 +1,33 @@
-from .. import constants as c
+from .sprite import *
+from .map import *
 
+DIRECTIONS = ["up", "right", "down", "left"]
+# Motion offsets
+DX = [ 0,  1,  0, -1]
+DY = [-1,  0,  1,  0]
 
-class Tank:
-    def __init__(self, x, y, direction, lives, die_after):
-        """Sets up a tank"""
-        self.x = x
-        self.y = y
+class Player(Sprite):
+    """Display and animate the player"""
+    is_player = True
+
+    def __init__(self, position, direction, lives):
+        sprite_cache = TileCache("player.png")
+        self.frames = sprite_cache["player.png"]
+        print("[tank.py] self.frames", self.frames)
+        Sprite.__init__(self, position)
         self.direction = direction
         self.lives = lives
-        self.die_after = die_after
+        self.position = position
+        self.image = self.frames[DIRECTIONS.index(self.direction)][0]
+        print("[tank.py] self.image", self.image)
 
-    def move(self, direction):
-        """Moves the tank in the given direction"""
-        self.direction = direction
-        if direction == c.DOWN:
-            self.y -= 1
-        elif direction == c.UP:
-            self.y += 1
-        elif direction == c.LEFT:
-            self.x -= 1
-        elif direction == c.RIGHT:
-            self.x += 1
-        
+    def move_tank(self):
+        direction = DIRECTIONS.index(self.direction)
+        self.image = self.frames[direction][0]
+        yield None
+        self.move(3 * DX[direction], 2 * DY[direction]) #FIXME
+        yield None
+        self.move(3 * DX[direction], 2 * DY[direction])
+
+    def update(self, *args):
+        self.image = self.frames[DIRECTIONS.index(self.direction)][0]

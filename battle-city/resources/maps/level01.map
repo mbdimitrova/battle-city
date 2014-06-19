@@ -14,10 +14,15 @@ map = .............
       .=.=.=.=.=.=.
       .=.=.....=.=.
       .=.=.===.=.=.
-      .....=b=.....
+      ...@.=b=.....
 
 [.]
 name = floor
+
+[@]
+name = player
+player = true
+sprite = player.png
 
 [=]
 name = brick
