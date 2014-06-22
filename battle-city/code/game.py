@@ -29,7 +29,6 @@ class Game(object):
                 sprite = Player(position, "up", 3)
                 self.player = sprite
             if tile.get("enemy") == "true":
-                print("[game.py] Enemy tank")
                 sprite = Tank(position, "left", 1)
                 self.enemy = sprite
             self.sprites.add(sprite)
@@ -55,7 +54,7 @@ class Game(object):
             next_x = x + DX[direction]
             next_y = y + DY[direction]
             if not self.level.is_blocking(next_x, next_y):
-                self.player.move_tank()
+                self.player.move()
 
         if is_pressed(pgl.K_UP):
             move("up")

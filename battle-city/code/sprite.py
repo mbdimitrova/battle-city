@@ -4,6 +4,12 @@ import pygame
 MAP_TILE_WIDTH = 32
 MAP_TILE_HEIGHT = 32
 
+DIRECTIONS = ["up", "right", "down", "left"]
+
+# Motion offsets
+DX = [ 0,  1,  0, -1]
+DY = [-1,  0,  1,  0]
+
 class SortedUpdates(pygame.sprite.RenderUpdates):
     """A sprite group that sorts sprites by depth."""
 
@@ -33,7 +39,14 @@ class Sprite(pygame.sprite.Sprite):
 
     position = property(get_position, set_position)
 
-    def move(self, dx, dy):
+    def move(self):
         """Change the position of the sprite"""
-        self.rect.move_ip(dx, dy)
-        self.depth = self.rect.midbottom[1]
+        
+        direction = DIRECTIONS.index(self.direction)
+        self.image = self.frames[direction][0]
+        dx = 4 * DX[direction]
+        dy = 4 * DY[direction]
+        for tick in range(8):
+            self.rect.move_ip(dx, dy)
+            self.depth = self.rect.midbottom[1]
+            #yield None
