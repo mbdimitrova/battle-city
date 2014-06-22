@@ -1,6 +1,6 @@
 [level]
 tileset = stage.png
-map = .............
+map = ............t
       .=.=.=.=.=.=.
       .=.=.=.=.=.=.
       .=.=.=+=.=.=.
@@ -39,3 +39,9 @@ destroyable = false
 [b]
 name = base
 destroyable = true
+
+[t]
+name = tank
+enemy = true
+destroyable = true
+sprite = tanks.png

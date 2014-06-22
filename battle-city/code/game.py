@@ -28,6 +28,10 @@ class Game(object):
             if tile.get("player") == "true":
                 sprite = Player(position, "up", 3)
                 self.player = sprite
+            if tile.get("enemy") == "true":
+                print("[game.py] Enemy tank")
+                sprite = Tank(position, "left", 1)
+                self.enemy = sprite
             self.sprites.add(sprite)
 
         for (x, y), image in overlays.items():

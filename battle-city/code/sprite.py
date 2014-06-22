@@ -13,7 +13,6 @@ class SortedUpdates(pygame.sprite.RenderUpdates):
 
 class Sprite(pygame.sprite.Sprite):
     """Sprite for animated items and base class for Tank"""
-    is_player = False
 
     def __init__(self, position = (0, 0), frames = None):
         super(Sprite, self).__init__()
@@ -38,7 +37,3 @@ class Sprite(pygame.sprite.Sprite):
         """Change the position of the sprite"""
         self.rect.move_ip(dx, dy)
         self.depth = self.rect.midbottom[1]
-
-#    def update(self, *args):
-#        """Run the current animation"""
-#        self.animation.next()
