@@ -50,7 +50,7 @@ class Game(object):
             direction = DIRECTIONS.index(direction)
             next_x = x + DX[direction]
             next_y = y + DY[direction]
-            if not self.level.is_blocking(next_x, next_y ):
+            if not self.level.is_blocking(next_x, next_y):
                 self.player.move_tank()
 
         if is_pressed(pgl.K_UP):
@@ -61,6 +61,7 @@ class Game(object):
             move("left")
         elif is_pressed(pgl.K_RIGHT):
             move("right")
+        self.pressed_key = None
         
     
     def main(self):
@@ -82,7 +83,7 @@ class Game(object):
             dirty = self.sprites.draw(self.screen)
             self.overlays.draw(self.screen)
             pg.display.update(dirty)
-            clock.tick(15)
+            clock.tick(10)
 
             for event in pg.event.get():
                 if event.type == pgl.QUIT:

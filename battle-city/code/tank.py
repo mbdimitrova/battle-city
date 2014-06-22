@@ -22,7 +22,9 @@ class Player(Sprite):
     def move_tank(self):
         direction = DIRECTIONS.index(self.direction)
         self.image = self.frames[direction][0]
-        self.move(DX[direction], DY[direction])
+        for tick in range(8):
+            self.move(4 * DX[direction], 4 * DY[direction])
+            #yield None
 
     def update(self, *args):
         self.image = self.frames[DIRECTIONS.index(self.direction)][0]

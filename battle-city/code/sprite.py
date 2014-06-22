@@ -39,6 +39,6 @@ class Sprite(pygame.sprite.Sprite):
         self.rect.move_ip(dx, dy)
         self.depth = self.rect.midbottom[1]
 
-    def update(self, *args):
-        """Run the current animation"""
-        self.animation.next()
+#    def update(self, *args):
+#        """Run the current animation"""
+#        self.animation.next()
