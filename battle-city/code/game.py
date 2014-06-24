@@ -8,6 +8,7 @@ from .tank import *
 TILE_WIDTH = 32
 TILE_HEIGHT = 32
 
+
 class Game(object):
     """The main game object"""
     def __init__(self, current_level):
@@ -70,7 +71,6 @@ class Game(object):
     def update_bullets(self):
         for position, bullet in enumerate(self.level.bullets):
             bullet.move()
-
 
     def main(self):
         """The main game loop"""

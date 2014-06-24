@@ -5,7 +5,7 @@ import pygame.locals
 class TileCache:
     """Load the tilesets lazily into global cache"""
 
-    def __init__(self, filename, width = 32, height = 32):
+    def __init__(self, filename, width=32, height=32):
         self.width = width
         self.height = height
         self.cache = {}
@@ -17,7 +17,8 @@ class TileCache:
         try:
             return self.cache[key]
         except KeyError:
-            tile_table = self.load_tile_table(filename, self.width, self.height)
+            tile_table = self.load_tile_table(filename,
+                                              self.width, self.height)
             self.cache[key] = tile_table
             return tile_table
 

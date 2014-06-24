@@ -24,14 +24,14 @@ class Level(object):
         parser.read("resources/maps/%s.map" % filename)
         self.tileset = parser.get("level", "tileset")
         self.map = parser.get("level", "map").split("\n")
-        
+
         for section in parser.sections():
             if len(section) == 1:
                 description = dict(parser.items(section))
                 self.key[section] = description
         self.map_width = len(self.map[0])
         self.map_height = len(self.map)
-        
+
         for y, line in enumerate(self.map):
             for x, c in enumerate(line):
                 if not self.is_wall(x, y) and 'sprite' in self.key[c]:
@@ -50,7 +50,7 @@ class Level(object):
             return {}
 
     def is_flagged(self, x, y, flag):
-        """Find out if the specified flag is set on the specified position on the map"""
+        """Find out if the flag is set on the given position on the map"""
         value = self.get_tile(x, y).get(flag)
         return value == 'true'
 
@@ -72,7 +72,6 @@ class Level(object):
         """Is the specified position a tile which can be destroyed?"""
         return self.is_flagged(x, y, 'destroyable')
 
-
     def render(self, filename):
         """Draw the level"""
         pygame.init()
@@ -81,7 +80,8 @@ class Level(object):
         screen = pygame.display.set_mode((view_width, view_height))
         image = pygame.Surface((view_width, view_height))
 
-        self.map_cache = TileCache("stage.png", self.tile_width, self.tile_height)
+        self.map_cache = TileCache("stage.png",
+                                   self.tile_width, self.tile_height)
 
         tiles = self.map_cache[self.tileset]
 
@@ -102,6 +102,7 @@ class Level(object):
                     tile = 0, 0
 
                 tile_image = tiles[tile[0]][tile[1]]
-                image.blit(tile_image,
-                        (map_x * self.tile_width, map_y * self.tile_height))
+                image.blit(tile_image, (map_x * self.tile_width,
+                                        map_y * self.tile_height))
+
         return image
