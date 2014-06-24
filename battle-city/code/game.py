@@ -21,10 +21,10 @@ class Game(object):
         self.sprites = SortedUpdates()
         self.overlays = pygame.sprite.RenderUpdates()
         self.level = level
-        
-        self.background, overlays = self.level.render(self.level.name)
-            
-        for position, tile in level.items.items():
+
+        self.background = self.level.render(self.level.name)
+
+        for position, tile in level.tanks.items():
             if tile.get("player") == "true":
                 sprite = Player(position, "up", 3)
                 self.player = sprite
@@ -32,11 +32,6 @@ class Game(object):
                 sprite = Tank(position, "left", 1)
                 self.enemy = sprite
             self.sprites.add(sprite)
-
-        for (x, y), image in overlays.items():
-            overlay = pygame.sprite.Sprite(self.overlays)
-            overlay.image = image
-            overlay.rect = image.get_rect().move(x * TILE_WIDTH, (y - 1) * TILE_HEIGHT)
 
     def control(self):
         """Handle the game controls"""
@@ -48,13 +43,16 @@ class Game(object):
 
         def move(direction):
             """Move the player in the specified direction"""
-            x, y = self.player.position
             self.player.direction = direction
-            direction = DIRECTIONS.index(direction)
-            next_x = x + DX[direction]
-            next_y = y + DY[direction]
+            (next_x, next_y) = self.player.next_position()
             if not self.level.is_blocking(next_x, next_y):
                 self.player.move()
+
+        def shoot():
+            (next_x, next_y) = self.player.next_position()
+            bullet = self.player.shoot()
+            self.sprites.add(bullet)
+            self.level.bullets.append(bullet)
 
         if is_pressed(pgl.K_UP):
             move("up")
@@ -64,19 +62,29 @@ class Game(object):
             move("left")
         elif is_pressed(pgl.K_RIGHT):
             move("right")
+        if is_pressed(pgl.K_SPACE):
+            bullet = shoot()
+
         self.pressed_key = None
-        
-    
+
+    def update_bullets(self):
+        for position, bullet in enumerate(self.level.bullets):
+            bullet.move()
+
+
     def main(self):
         """The main game loop"""
         clock = pg.time.Clock()
-        
+
         # Draw the screen
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
         pg.display.flip()
 
         while not self.game_over:
+            #Update bullets' positions
+            self.update_bullets()
+
             # Update sprites
             self.sprites.clear(self.screen, self.background)
             self.sprites.update()

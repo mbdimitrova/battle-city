@@ -1,4 +1,5 @@
 from .sprite import *
+from .map import *
 
 
 class Bullet(Sprite):
@@ -10,3 +11,4 @@ class Bullet(Sprite):
         self.direction = direction
         self.position = position
         self.image = self.frames[DIRECTIONS.index(self.direction)][0]
+        print(self)

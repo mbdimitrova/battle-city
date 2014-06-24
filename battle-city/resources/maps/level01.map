@@ -20,8 +20,8 @@ map = ............t
 name = floor
 
 [@]
-name = player
 player = true
+tank = true
 sprite = player.png
 
 [=]
@@ -41,7 +41,7 @@ name = base
 destroyable = true
 
 [t]
-name = tank
+tank = true
 enemy = true
 destroyable = true
 sprite = tanks.png

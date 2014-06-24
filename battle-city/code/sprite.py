@@ -18,7 +18,7 @@ class SortedUpdates(pygame.sprite.RenderUpdates):
         return sorted(self.spritedict.keys(), key=lambda sprite: sprite.depth)
 
 class Sprite(pygame.sprite.Sprite):
-    """Sprite for animated items and base class for Tank"""
+    """Base class for tanks and bullets"""
 
     def __init__(self, position = (0, 0), frames = None):
         super(Sprite, self).__init__()

@@ -13,7 +13,8 @@ class Level(object):
         self.tileset = ''
         self.map = []
         self.key = {}
-        self.items = {}
+        self.tanks = {}
+        self.bullets = []
         self.map_width = 0
         self.map_height = 0
         self.load_map_file(filename)
@@ -34,7 +35,8 @@ class Level(object):
         for y, line in enumerate(self.map):
             for x, c in enumerate(line):
                 if not self.is_wall(x, y) and 'sprite' in self.key[c]:
-                    self.items[(x, y)] = self.key[c]
+                    self.tanks[(x, y)] = self.key[c]
+        print("[level.py] self.tanks", self.tanks)
 
     def get_tile(self, x, y):
         """Find out what's at the specified position of the map"""
@@ -82,7 +84,6 @@ class Level(object):
         self.map_cache = TileCache("stage.png", self.tile_width, self.tile_height)
 
         tiles = self.map_cache[self.tileset]
-        overlays = {}
 
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
@@ -103,4 +104,4 @@ class Level(object):
                 tile_image = tiles[tile[0]][tile[1]]
                 image.blit(tile_image,
                         (map_x * self.tile_width, map_y * self.tile_height))
-        return image, overlays
+        return image
