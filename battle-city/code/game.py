@@ -55,7 +55,7 @@ class Game(object):
             """Move the player in the specified direction"""
             self.player.direction = direction
             (next_x, next_y) = self.player.next_position()
-            if not self.level.is_blocking(next_x, next_y):
+            if not self.level.is_blocking(next_x, next_y) and not self.level.is_out(next_x, next_y):
                 self.player.move()
 
         def shoot():
