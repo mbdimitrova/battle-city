@@ -82,17 +82,20 @@ class Game(object):
         for position, bullet in enumerate(self.level.bullets):
             (x, y) = bullet.position
             (next_x, next_y) = bullet.next_position()
+
             if self.level.is_blocking(x, y):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
                 if self.level.is_destroyable(x, y):
                     self.destroy(bullet.position)
+                    if self.level.is_base(x, y):
+                        self.game_over = True
 
             elif self.level.is_out(x, y):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
 
-            elif self.level.is_wall(next_x, next_y):
+            elif self.level.is_wall(next_x, next_y) and not self.level.is_destroyable(next_x, next_y):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
 
@@ -102,12 +105,13 @@ class Game(object):
     def destroy(self, position):
         """Destroy the element on the given position"""
         (x, y) = position
+        for sprite in self.sprites:
+            if sprite.position == position:
+                brick = sprite
+                break
+        self.sprites.remove(brick)
+
         if self.level.is_wall(x, y):
-            for sprite in self.sprites:
-                if sprite.position == position:
-                    brick = sprite
-                    break
-            self.sprites.remove(brick)
             self.level.bricks.pop(position)
             self.level.set_tile(x, y)
 

@@ -39,10 +39,12 @@ block = true
 [b]
 base = true
 destroyable = true
+block = true
 sprite = destroyable.png
 
 [t]
 tank = true
 enemy = true
 destroyable = true
+block = true
 sprite = tanks.png

@@ -82,6 +82,10 @@ class Level(object):
         """Is the specified position a tile which can be destroyed?"""
         return self.is_flagged(x, y, 'destroyable')
 
+    def is_base(self, x, y):
+        """Is the specified position the player's base?"""
+        return self.is_flagged(x, y, 'base')
+
     def render(self, filename):
         """Draw the level"""
         pygame.init()
