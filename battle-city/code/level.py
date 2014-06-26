@@ -56,9 +56,7 @@ class Level(object):
 
     def set_tile(self, x, y):
         """Change a brick tile of the map during the game"""
-        print(self.map[y])
         self.map[y] = self.map[y][:x] + '.' + self.map[y][(x+1):]
-        print(self.map[y], "\n\n")
 
     def is_flagged(self, x, y, flag):
         """Find out if the flag is set on the given position on the map"""

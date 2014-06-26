@@ -60,9 +60,10 @@ class Game(object):
 
         def shoot():
             (next_x, next_y) = self.player.next_position()
-            bullet = self.player.shoot()
-            self.sprites.add(bullet)
-            self.level.bullets.append(bullet)
+            if not self.level.is_blocking(next_x, next_y) or self.level.is_destroyable(next_x, next_y):
+                bullet = self.player.shoot()
+                self.sprites.add(bullet)
+                self.level.bullets.append(bullet)
 
         if is_pressed(pgl.K_UP):
             move("up")
@@ -80,6 +81,7 @@ class Game(object):
     def update_bullets(self):
         for position, bullet in enumerate(self.level.bullets):
             (x, y) = bullet.position
+            (next_x, next_y) = bullet.next_position()
             if self.level.is_blocking(x, y):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
@@ -87,6 +89,10 @@ class Game(object):
                     self.destroy(bullet.position)
 
             elif self.level.is_out(x, y):
+                self.sprites.remove(bullet)
+                self.level.bullets.remove(bullet)
+
+            elif self.level.is_wall(next_x, next_y):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
 
