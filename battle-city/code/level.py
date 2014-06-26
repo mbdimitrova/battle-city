@@ -14,6 +14,8 @@ class Level(object):
         self.map = []
         self.key = {}
         self.tanks = {}
+        self.bricks = {}
+        self.base = {}
         self.bullets = []
         self.map_width = 0
         self.map_height = 0
@@ -34,20 +36,29 @@ class Level(object):
 
         for y, line in enumerate(self.map):
             for x, c in enumerate(line):
-                if not self.is_wall(x, y) and 'sprite' in self.key[c]:
+                if 'tank' in self.key[c]:
                     self.tanks[(x, y)] = self.key[c]
-        print("[level.py] self.tanks", self.tanks)
+                elif 'base' in self.key[c]:
+                    self.base[(x, y)] = self.key[c]
+                elif 'destroyable' in self.key[c]:
+                    self.bricks[(x, y)] = self.key[c]
 
     def get_tile(self, x, y):
         """Find out what's at the specified position of the map"""
         try:
             char = self.map[y][x]
-        except IndexEror:
+        except IndexError:
             return {}
         try:
             return self.key[char]
         except KeyError:
             return {}
+
+    def set_tile(self, x, y):
+        """Change a brick tile of the map during the game"""
+        print(self.map[y])
+        self.map[y] = self.map[y][:x] + '.' + self.map[y][(x+1):]
+        print(self.map[y], "\n\n")
 
     def is_flagged(self, x, y, flag):
         """Find out if the flag is set on the given position on the map"""
@@ -64,9 +75,10 @@ class Level(object):
 
     def is_blocking(self, x, y):
         """Is the specified postion a blocking element?"""
-        if not 0 <= x < self.map_width or not 0 <= y < self.map_height:
-            return True
         return self.is_flagged(x, y, 'block')
+            
+    def is_out(self, x, y):
+        return not 0 <= x < self.map_width or not 0 <= y < self.map_height
 
     def is_destroyable(self, x, y):
         """Is the specified position a tile which can be destroyed?"""
@@ -88,15 +100,15 @@ class Level(object):
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
 
-                # if the position is an obstacle
-                if self.tile_type(map_x, map_y, "brick"):
+                # if the position is an obstacle which cannot be destroyed
+                #if self.tile_type(map_x, map_y, "brick"):
+                #    tile = 1, 0
+                if self.tile_type(map_x, map_y, "steel"):
                     tile = 1, 0
-                elif self.tile_type(map_x, map_y, "steel"):
-                    tile = 2, 0
 
                 # if the position is the base
-                elif self.tile_type(map_x, map_y, "base"):
-                    tile = 6, 0
+                #elif self.tile_type(map_x, map_y, "base"):
+                #    tile = 6, 0
 
                 else:
                     tile = 0, 0

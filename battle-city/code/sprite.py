@@ -20,7 +20,7 @@ class SortedUpdates(pygame.sprite.RenderUpdates):
 
 
 class Sprite(pygame.sprite.Sprite):
-    """Base class for tanks and bullets"""
+    """Base class for tanks, bullets, game base and bricks tiles"""
 
     def __init__(self, position=(0, 0), frames=None):
         super(Sprite, self).__init__()

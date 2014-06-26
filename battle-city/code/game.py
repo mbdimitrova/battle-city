@@ -3,6 +3,7 @@ import pygame.locals as pgl
 from .level import *
 from .sprite import *
 from .tank import *
+from .destroyable import *
 
 
 TILE_WIDTH = 32
@@ -29,9 +30,17 @@ class Game(object):
             if tile.get("player") == "true":
                 sprite = Player(position, "up", 3)
                 self.player = sprite
-            if tile.get("enemy") == "true":
+            elif tile.get("enemy") == "true":
                 sprite = Tank(position, "left", 1)
                 self.enemy = sprite
+            self.sprites.add(sprite)
+
+        for position, tile in level.bricks.items():
+            sprite = BricksTile(position)
+            self.sprites.add(sprite)
+
+        for position, tile in level.base.items():
+            sprite = PlayerBase(position)
             self.sprites.add(sprite)
 
     def control(self):
@@ -70,7 +79,31 @@ class Game(object):
 
     def update_bullets(self):
         for position, bullet in enumerate(self.level.bullets):
-            bullet.move()
+            (x, y) = bullet.position
+            if self.level.is_blocking(x, y):
+                self.sprites.remove(bullet)
+                self.level.bullets.remove(bullet)
+                if self.level.is_destroyable(x, y):
+                    self.destroy(bullet.position)
+
+            elif self.level.is_out(x, y):
+                self.sprites.remove(bullet)
+                self.level.bullets.remove(bullet)
+
+            else:
+                bullet.move()
+
+    def destroy(self, position):
+        """Destroy the element on the given position"""
+        (x, y) = position
+        if self.level.is_wall(x, y):
+            for sprite in self.sprites:
+                if sprite.position == position:
+                    brick = sprite
+                    break
+            self.sprites.remove(brick)
+            self.level.bricks.pop(position)
+            self.level.set_tile(x, y)
 
     def main(self):
         """The main game loop"""
