@@ -105,20 +105,10 @@ class Level(object):
 
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
-
-                # if the position is an obstacle which cannot be destroyed
-                #if self.tile_type(map_x, map_y, "brick"):
-                #    tile = 1, 0
                 if self.tile_type(map_x, map_y, "steel"):
                     tile = 1, 0
-
-                # if the position is the base
-                #elif self.tile_type(map_x, map_y, "base"):
-                #    tile = 6, 0
-
                 else:
                     tile = 0, 0
-
                 tile_image = tiles[tile[0]][tile[1]]
                 image.blit(tile_image, (map_x * self.tile_width,
                                         map_y * self.tile_height))

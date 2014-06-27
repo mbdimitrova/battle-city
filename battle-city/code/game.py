@@ -1,5 +1,6 @@
 import pygame as pg
 import pygame.locals as pgl
+import math
 from .level import *
 from .sprite import *
 from .tank import *
@@ -29,7 +30,6 @@ class Game(object):
         for position, tile in level.enemies.items():
             if tile.get("enemy") == "true":
                 sprite = Tank(position, "left", 1)
-                self.enemy = sprite
                 self.sprites.add(sprite)
 
         for position, tile in level.player.items():
@@ -44,6 +44,7 @@ class Game(object):
 
         for position, tile in level.base.items():
             sprite = PlayerBase(position)
+            self.base = sprite
             self.sprites.add(sprite)
 
     def control(self):
@@ -54,32 +55,32 @@ class Game(object):
             """Check is the specified key is pressed"""
             return self.pressed_key == key or keys[key]
 
-        def move(direction):
-            """Move the player in the specified direction"""
-            self.player.direction = direction
-            (next_x, next_y) = self.player.next_position()
-            if not self.level.is_blocking(next_x, next_y) and not self.level.is_out(next_x, next_y):
-                self.player.move()
-
-        def shoot():
-            (next_x, next_y) = self.player.next_position()
-            if not self.level.is_blocking(next_x, next_y) or self.level.is_destroyable(next_x, next_y):
-                bullet = self.player.shoot()
-                self.sprites.add(bullet)
-                self.level.bullets.append(bullet)
-
         if is_pressed(pgl.K_UP):
-            move("up")
+            self.move_tank(self.player, "up")
         elif is_pressed(pgl.K_DOWN):
-            move("down")
+            self.move_tank(self.player, "down")
         elif is_pressed(pgl.K_LEFT):
-            move("left")
+            self.move_tank(self.player, "left")
         elif is_pressed(pgl.K_RIGHT):
-            move("right")
+            self.move_tank(self.player, "right")
         if is_pressed(pgl.K_SPACE):
-            bullet = shoot()
+            self.tank_shoot(self.player)
 
         self.pressed_key = None
+
+    def move_tank(tank, direction):
+        """Move the player in the specified direction"""
+        tank.direction = direction
+        (next_x, next_y) = tank.next_position()
+        if not self.level.is_blocking(next_x, next_y) and not self.level.is_out(next_x, next_y):
+            tank.move()
+
+    def tank_shoot(self, tank):
+        (next_x, next_y) = tank.next_position()
+        if not self.level.is_blocking(next_x, next_y) or self.level.is_destroyable(next_x, next_y):
+            bullet = tank.shoot()
+            self.sprites.add(bullet)
+            self.level.bullets.append(bullet)
 
     def update_bullets(self):
         for position, bullet in enumerate(self.level.bullets):
@@ -105,6 +106,7 @@ class Game(object):
             else:
                 bullet.move()
 
+
     def destroy(self, position):
         """Destroy the element on the given position"""
         (x, y) = position
@@ -118,6 +120,38 @@ class Game(object):
             self.level.bricks.pop(position)
             self.level.set_tile(x, y)
 
+    def target_direction(self, enemy_position, enemy_direction):
+        """Return the direction of the closest target for the given enemy tank"""
+        delta_base = self.delta(self.base.position, enemy_position)
+        delta_player = self.delta(self.player.position, enemy_position)
+        if delta_base < delta_player:
+            return self.find_direction(enemy_position, self.base.position)
+        return self.find_direction(enemy_position, self.player.position)
+
+    def find_direction(self, enemy_position, target_position):
+        """Find the direction in which the enemy tank should move"""
+        if enemy_position[0] < target_position[0]:
+            return "right"
+        elif enemy_position[0] > target_position[0]:
+            return "left"
+        else:
+            if enemy_position[1] < target_position[1]:
+                return "down"
+            return "up"
+
+    def delta(self, enemy_position, target_position):
+        """Find the distance in tiles to the target"""
+        coordinates = [x - y for x, y in zip(enemy_position, target_position)]
+        return sum(int(math.fabs(x)) for x in coordinates)
+
+    def control_enemies(self):
+        """Controls the enemy tanks and their shooting"""
+        for sprite in self.sprites:
+            if isinstance(sprite, Tank) and not isinstance(sprite, Player):
+                direction = self.target_direction(sprite.position, sprite.direction)
+                sprite.move_to(direction)
+                self.tank_shoot(sprite)
+
     def main(self):
         """The main game loop"""
         clock = pg.time.Clock()
@@ -128,8 +162,9 @@ class Game(object):
         pg.display.flip()
 
         while not self.game_over:
-            #Update bullets' positions
+            #Update bullets' positions and enemy tanks
             self.update_bullets()
+            self.control_enemies()
 
             # Update sprites
             self.sprites.clear(self.screen, self.background)
@@ -140,7 +175,7 @@ class Game(object):
             dirty = self.sprites.draw(self.screen)
             self.overlays.draw(self.screen)
             pg.display.update(dirty)
-            clock.tick(10)
+            clock.tick(5)
 
             for event in pg.event.get():
                 if event.type == pgl.QUIT:

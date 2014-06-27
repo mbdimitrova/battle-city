@@ -15,6 +15,7 @@ class Tank(Sprite):
         self.lives = lives
         self.position = position
         self.image = self.frames[DIRECTIONS.index(self.direction)][0]
+        self.is_enemy = True
 
     def update(self, *args):
         self.image = self.frames[DIRECTIONS.index(self.direction)][0]
@@ -24,12 +25,18 @@ class Tank(Sprite):
         bullet = Bullet((next_x, next_y), self.direction)
         return bullet
 
+    def move_to(self, direction):
+        """Changes the direction and moves in the new direction"""
+        self.direction = direction
+        self.move()
+
 
 class Player(Tank):
     """Display the player"""
-    is_player = True
+    #is_player = True
 
     def __init__(self, position, direction, lives):
+        self.is_enemy = False
         Tank.__init__(self, position, direction, lives)
         sprite_cache = TileCache("player.png")
         self.frames = sprite_cache["player.png"]
