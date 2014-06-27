@@ -5,7 +5,6 @@ from .bullet import *
 
 class Tank(Sprite):
     """Sprite for enemy tanks and base class for Player"""
-    is_enemy = True
 
     def __init__(self, position, direction, lives):
         sprite_cache = TileCache("tanks.png")
@@ -30,13 +29,16 @@ class Tank(Sprite):
         self.direction = direction
         self.move()
 
+    def is_killed(self):
+        self.lives -= 1
+        return self.lives == 0
+
 
 class Player(Tank):
     """Display the player"""
-    #is_player = True
 
     def __init__(self, position, direction, lives):
-        self.is_enemy = False
         Tank.__init__(self, position, direction, lives)
+        self.is_enemy = False
         sprite_cache = TileCache("player.png")
         self.frames = sprite_cache["player.png"]

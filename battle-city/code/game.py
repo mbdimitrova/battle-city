@@ -68,7 +68,7 @@ class Game(object):
 
         self.pressed_key = None
 
-    def move_tank(tank, direction):
+    def move_tank(self, tank, direction):
         """Move the player in the specified direction"""
         tank.direction = direction
         (next_x, next_y) = tank.next_position()
@@ -103,6 +103,10 @@ class Game(object):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
 
+            elif self.player.position == (next_x, next_y):
+                if self.player.is_killed():
+                    self.game_over = True
+
             else:
                 bullet.move()
 
@@ -113,8 +117,7 @@ class Game(object):
         for sprite in self.sprites:
             if sprite.position == position:
                 brick = sprite
-                break
-        self.sprites.remove(brick)
+                self.sprites.remove(brick)
 
         if self.level.is_wall(x, y):
             self.level.bricks.pop(position)
@@ -160,11 +163,17 @@ class Game(object):
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
         pg.display.flip()
+        difficulty = 10
+        timer = 0
 
         while not self.game_over:
             #Update bullets' positions and enemy tanks
             self.update_bullets()
-            self.control_enemies()
+            if (timer == difficulty):
+                self.control_enemies()
+                timer = 0
+            else:
+                timer += 1
 
             # Update sprites
             self.sprites.clear(self.screen, self.background)
@@ -175,10 +184,12 @@ class Game(object):
             dirty = self.sprites.draw(self.screen)
             self.overlays.draw(self.screen)
             pg.display.update(dirty)
-            clock.tick(5)
+            clock.tick(10)
 
             for event in pg.event.get():
                 if event.type == pgl.QUIT:
                     self.game_over = True
                 elif event.type == pgl.KEYDOWN:
                     self.pressed_key = event.key
+
+        print("GAME OVER")
