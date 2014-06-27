@@ -87,6 +87,11 @@ class Game(object):
             (x, y) = bullet.position
             (next_x, next_y) = bullet.next_position()
 
+            if self.is_enemy((next_x, next_y)):
+                self.sprites.remove(bullet)
+                self.level.bullets.remove(bullet)
+                self.destroy((next_x, next_y))
+
             if self.level.is_blocking(x, y):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
@@ -110,6 +115,12 @@ class Game(object):
             else:
                 bullet.move()
 
+    def is_enemy(self, position):
+        """Is there an enemy tank on the given position?"""
+        for sprite in self.sprites:
+            if sprite.position == position and isinstance(sprite, Tank) and not isinstance(sprite, Player):
+                return True
+        return False
 
     def destroy(self, position):
         """Destroy the element on the given position"""
@@ -163,7 +174,7 @@ class Game(object):
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
         pg.display.flip()
-        difficulty = 10
+        difficulty = 10 # higher number => slower enemies
         timer = 0
 
         while not self.game_over:
