@@ -18,6 +18,7 @@ class Game(object):
         self.game_over = False
         self.create_level(Level(current_level, TILE_WIDTH, TILE_HEIGHT))
         self.screen = pg.display.get_surface()
+        self.killed = 0
 
     def create_level(self, level):
         """Creates a level and sets it as the current one"""
@@ -91,6 +92,7 @@ class Game(object):
                 self.sprites.remove(bullet)
                 self.level.bullets.remove(bullet)
                 self.destroy((next_x, next_y))
+                self.killed += 1
 
             if self.level.is_blocking(x, y):
                 self.sprites.remove(bullet)
@@ -183,8 +185,9 @@ class Game(object):
         pg.display.flip()
         # higher numbers => slower enemies
         enemy_control_time = 15
-        enemy_create_time = 60
+        enemy_create_time = 100
         timer = 0
+        player_wins = 5
 
         while not self.game_over:
             #Update bullets' positions and enemy tanks
@@ -207,6 +210,10 @@ class Game(object):
             dirty = self.sprites.draw(self.screen)
             self.overlays.draw(self.screen)
             pg.display.update(dirty)
+
+            if self.killed >= player_wins:
+                print("YOU WIN!")
+                self.game_over = True
             clock.tick(10)
 
             for event in pg.event.get():
