@@ -122,6 +122,13 @@ class Game(object):
                 return True
         return False
 
+    def create_enemy(self):
+        print("[game] create a new enemy...")
+        for position, tile in self.level.enemies.items():
+            if tile.get("enemy") == "true":
+                sprite = Tank(position, "left", 1)
+                self.sprites.add(sprite)
+
     def destroy(self, position):
         """Destroy the element on the given position"""
         (x, y) = position
@@ -174,14 +181,19 @@ class Game(object):
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
         pg.display.flip()
-        difficulty = 10 # higher number => slower enemies
+        # higher numbers => slower enemies
+        enemy_control_time = 15
+        enemy_create_time = 60
         timer = 0
 
         while not self.game_over:
             #Update bullets' positions and enemy tanks
             self.update_bullets()
-            if (timer == difficulty):
+            if timer % enemy_control_time == 0:
                 self.control_enemies()
+                timer += 1
+            elif timer >= enemy_create_time:
+                self.create_enemy()
                 timer = 0
             else:
                 timer += 1
