@@ -13,7 +13,8 @@ class Level(object):
         self.tileset = ''
         self.map = []
         self.key = {}
-        self.tanks = {}
+        self.enemies = {}
+        self.player = {}
         self.bricks = {}
         self.base = {}
         self.bullets = []
@@ -37,7 +38,10 @@ class Level(object):
         for y, line in enumerate(self.map):
             for x, c in enumerate(line):
                 if 'tank' in self.key[c]:
-                    self.tanks[(x, y)] = self.key[c]
+                    if 'enemy' in self.key[c]:
+                        self.enemies[(x, y)] = self.key[c]
+                    else:
+                        self.player[(x, y)] = self.key[c]
                 elif 'base' in self.key[c]:
                     self.base[(x, y)] = self.key[c]
                 elif 'destroyable' in self.key[c]:

@@ -26,14 +26,17 @@ class Game(object):
 
         self.background = self.level.render(self.level.name)
 
-        for position, tile in level.tanks.items():
-            if tile.get("player") == "true":
-                sprite = Player(position, "up", 3)
-                self.player = sprite
-            elif tile.get("enemy") == "true":
+        for position, tile in level.enemies.items():
+            if tile.get("enemy") == "true":
                 sprite = Tank(position, "left", 1)
                 self.enemy = sprite
-            self.sprites.add(sprite)
+                self.sprites.add(sprite)
+
+        for position, tile in level.player.items():
+             if tile.get("player") == "true":
+                sprite = Player(position, "up", 3)
+                self.player = sprite
+                self.sprites.add(sprite)
 
         for position, tile in level.bricks.items():
             sprite = BricksTile(position)
