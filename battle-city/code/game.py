@@ -125,7 +125,6 @@ class Game(object):
         return False
 
     def create_enemy(self):
-        print("[game] create a new enemy...")
         for position, tile in self.level.enemies.items():
             if tile.get("enemy") == "true":
                 sprite = Tank(position, "left", 1)

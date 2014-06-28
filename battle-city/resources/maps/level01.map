@@ -17,9 +17,11 @@ map = ............t
       ...@.=b=.....
 
 [.]
+name = floor
 block = false
 
 [@]
+name = player
 player = true
 tank = true
 sprite = player.png
@@ -37,12 +39,14 @@ wall = true
 block = true
 
 [b]
+name = base
 base = true
 destroyable = true
 block = true
 sprite = destroyable.png
 
 [t]
+name = enemy
 tank = true
 enemy = true
 destroyable = true
